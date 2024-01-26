@@ -64,7 +64,6 @@ class Auth:
         user = self._db.add_user(email, hashed_password)
         return user
 
-
     def valid_login(self, email: str, password: str) -> bool:
         """Checks if a user's email and password are valid.
 
@@ -87,7 +86,6 @@ class Auth:
             return False
         return False
 
-
     def create_session(self, email: str) -> str:
         """Creates a session and returns its ID as string.
 
@@ -109,7 +107,6 @@ class Auth:
         self._db.update_user(user.id, session_id=session_id)
         return session_id
 
-
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """Retrieve a User object from a session ID
 
@@ -128,7 +125,6 @@ class Auth:
             return None
         return user
 
-
     def destory_session(self, user_id: int) -> None:
         """Method to destory the session associated with a user
 
@@ -138,7 +134,9 @@ class Auth:
         Returns:
             None
         """
-
+        if user_id is None:
+            return None
+        self._db.update_user(user_id, session_id=None)
 
     def get_reset_password_token(self, email: str) -> str:
         """Generates a password reset token for a user.
@@ -164,7 +162,6 @@ class Auth:
         reset_token = _generate_uuid()
         self._db.update_user(user.id, reset_token=reset_token)
         return reset_token
-
 
     def update_password(self, reset_token: str, password: str) -> None:
         """Updates a user's password using a reset token.
