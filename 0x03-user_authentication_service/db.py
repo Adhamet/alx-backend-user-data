@@ -55,7 +55,7 @@ class DB:
         except Exception as e:
             print(f"Error adding user to database: {e}")
             self._session.rollback()
-            raise   
+            raise
         return new_user
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
