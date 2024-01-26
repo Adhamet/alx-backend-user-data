@@ -125,13 +125,13 @@ class Auth:
             return None
         return user
 
-    def destory_session(self, user_id: int) -> None:
-        """Method to destory the session associated with a user
-
+    def destroy_session(self, user_id: int) -> None:
+        """
+        Take a user_id and destroy that user's session and update their
+        session_id attribute to None
         Args:
-            user_id (int): The ID of the user whose session is to be destroyed.
-
-        Returns:
+            user_id (int): user's id
+        Return:
             None
         """
         try:
