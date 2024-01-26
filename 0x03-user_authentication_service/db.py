@@ -52,7 +52,8 @@ class DB:
 
         Raises:
             error: NoResultFound: When no results are found.
-            error: InvalidRequestError: When invalid query arguments are passed
+            error: InvalidRequestError: When invalid query
+            arguments are passed.
 
         Returns:
             User: First row found in the `users` table.
