@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
 """DB module
 """
+import logging
+from typing import Dict
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 from user import Base, User
+
+logging.disable(logging.WARNING)
 
 
 class DB:
@@ -43,10 +48,10 @@ class DB:
         # Create a new user
         new_user = User(email=email, hashed_password=hashed_password)
         try:
-            self.__session.add(new_user)
-            self.__session.commit()
+            self._session.add(new_user)
+            self._session.commit()
         except Exception as e:
             print(f"Error adding user to database: {e}")
-            self.__session.rollback()
+            self._session.rollback()
             raise
         return new_user
