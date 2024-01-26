@@ -5,9 +5,11 @@ import logging
 from typing import Dict
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm.session import Session
+from sqlalchemy.ext.declarative import declarative_base
 
 from user import Base, User
 
@@ -53,5 +55,24 @@ class DB:
         except Exception as e:
             print(f"Error adding user to database: {e}")
             self._session.rollback()
-            raise
+            raise   
         return new_user
+
+    def find_user_by(self, **kwargs: Dict[str, str]) -> User:
+        """Find a user by specified attributes.
+
+        Raises:
+            error: NoResultFound: When no results are found.
+            error: InvalidRequestError: When invalid query arguments are passed
+
+        Returns:
+            User: First row found in the `users` table.
+        """
+        sesh = self._session
+        try:
+            user = sesh.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
+        return user
