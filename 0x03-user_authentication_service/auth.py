@@ -134,9 +134,11 @@ class Auth:
         Returns:
             None
         """
-        if user_id is None:
+        try:
+            self._db.update_user(user_id, session_id=None)
+        except ValueError:
             return None
-        self._db.update_user(user_id, session_id=None)
+        return None
 
     def get_reset_password_token(self, email: str) -> str:
         """Generates a password reset token for a user.
