@@ -69,7 +69,7 @@ class DB:
             User: First row found in the `users` table.
         """
         all_users = self._session.query(User)
-        for key,val in kwargs.items():
+        for key, val in kwargs.items():
             if key not in User.__dict__:
                 raise InvalidRequestError
             for user in all_users:
