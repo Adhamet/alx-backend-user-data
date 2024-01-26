@@ -68,14 +68,14 @@ class DB:
         Returns:
             User: First row found in the `users` table.
         """
-        sesh = self._session
-        try:
-            user = sesh.query(User).filter_by(**kwargs).one()
-        except NoResultFound:
-            raise NoResultFound()
-        except InvalidRequestError:
-            raise InvalidRequestError()
-        return user
+        all_users = self._session.query(User)
+        for key,val in kwargs.items():
+            if key not in User.__dict__:
+                raise InvalidRequestError
+            for user in all_users:
+                if getattr(user, key) == val:
+                    return user
+        raise NoResultFound
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a user's attributes by user ID and arbitrary keyword
