@@ -49,13 +49,8 @@ class DB:
         """
         # Create a new user
         new_user = User(email=email, hashed_password=hashed_password)
-        try:
-            self._session.add(new_user)
-            self._session.commit()
-        except Exception as e:
-            print(f"Error adding user to database: {e}")
-            self._session.rollback()
-            raise
+        self._session.add(new_user)
+        self._session.commit()
         return new_user
 
     def find_user_by(self, **kwargs: Dict[str, str]) -> User:
@@ -68,14 +63,14 @@ class DB:
         Returns:
             User: First row found in the `users` table.
         """
-        all_users = self._session.query(User)
-        for key, val in kwargs.items():
-            if key not in User.__dict__:
-                raise InvalidRequestError
-            for user in all_users:
-                if getattr(user, key) == val:
-                    return user
-        raise NoResultFound
+        sesh = self._session
+        try:
+            user = sesh.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise NoResultFound()
+        except InvalidRequestError:
+            raise InvalidRequestError()
+        return user
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Updates a user's attributes by user ID and arbitrary keyword
@@ -95,17 +90,16 @@ class DB:
         try:
             user = self.find_user_by(id=user_id)
         except NoResultFound:
-            raise ValueError("User with id {} not found".format(user_id))
+            raise ValueError()
 
         # Update user's attributes
         for key, value in kwargs.items():
             if not hasattr(user, key):
-                # Raise error for invalid existence of argument.
-                raise ValueError("User has no attribute {}".format(key))
+                raise ValueError()
             setattr(user, key, value)
 
         try:
             # Commit changes to database
             self._session.commit()
         except InvalidRequestError:
-            raise ValueError("Invalid Request")
+            raise ValueError()
