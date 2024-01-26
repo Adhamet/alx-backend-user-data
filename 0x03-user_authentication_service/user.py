@@ -5,12 +5,12 @@ Making a model named user
 from sqlalchemy import Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
-
 Base = declarative_base()
+
 
 class User(Base):
     """A class representing a user in the system
-    
+
     Attributes:
         __tablename__ (str): The name of the table in the database
         id (int): Unique identifier of user.
